@@ -1,4 +1,5 @@
 const axios = require("axios");
+const markDown = require("generateMarkdown.js");
 
 const api = {
   getUser(username) {
@@ -9,6 +10,7 @@ const api = {
       // const repoNames = [];
       // res.data.forEach(repo => repoNames.push(repo.name));
       // const repoNamesStr = repoNames.join("\n");
+      markDown.generateMarkdown(res.data);
     });
   }
 };

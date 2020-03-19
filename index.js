@@ -1,5 +1,6 @@
 const inquirer = require("inquirer");
 const fs = require("fs");
+const api = require("./utils/api.js");
 
 const questions = [
     {
@@ -15,6 +16,7 @@ const questions = [
         name: "desc"
     },
     {
+        type: "editor",
         message: "What are the steps required to install your project? Provide a step-by-step description of how to get the development environment running.",
         name: "install"
     },
@@ -23,6 +25,7 @@ const questions = [
         name: "usage"
     },
     {
+        type: "list",
         message: "Choose a license that works best for your project.",
         name: "license",
         choices: [
@@ -53,7 +56,10 @@ function writeToFile(fileName, data) {
 }
 
 function init() {
-
+    inquirer.prompt(questions).then(function(answers){
+        console.log(answers);
+        api.getUser(answers.username);
+    });
 }
 
 init();
