@@ -1,18 +1,24 @@
 const axios = require("axios");
-const markDown = require("generateMarkdown.js");
+require("dotenv").config();
 
 const api = {
   getUser(username) {
-    const queryUrl = `https://api.github.com/users/${username}/repos?per_page=100`;
-    axios.get(queryUrl)
-    .then(function(res){
-      console.log(res.data);
-      // const repoNames = [];
-      // res.data.forEach(repo => repoNames.push(repo.name));
-      // const repoNamesStr = repoNames.join("\n");
-      markDown.generateMarkdown(res.data);
-    });
+    // const queryUrl = `https://api.github.com/users/${username}/repos?per_page=100`;
+    // const queryUrl = `https://api.github.com/users/${username}/public`;
+    const queryUrl = "https://api.github.com/graphql";
+    const oauth = {Authorization: 'bearer ' + process.env.GH_TOKEN};
+    return axios.post(
+      queryUrl,
+      {query: `{user(login: "${username}") {
+        email
+        avatarUrl
+        }
+      }`
+      },
+      {headers: oauth});
   }
 };
 
 module.exports = api;
+
+// 9c8e9cd396a272c970768b6ecfe542667d27f624

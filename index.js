@@ -1,6 +1,10 @@
 const inquirer = require("inquirer");
 const fs = require("fs");
-const api = require("./utils/api.js");
+const util = require("util");
+const api = require("./utils/api");
+const markdown = require("./utils/generateMarkdown");
+
+const writeFileAsync = util.promisify(fs.writeFile);
 
 const questions = [
     {
@@ -45,8 +49,8 @@ const questions = [
     }
 ];
 
-function writeToFile(fileName, data) {
-    fs.writeFile("repos.txt", repoNamesStr, function(err) {
+async function writeToFile(fileName, data) {
+    await writeFileAsync(fileName, data, function(err) {
         if (err) {
           return console.log(err);
         }
@@ -56,9 +60,20 @@ function writeToFile(fileName, data) {
 }
 
 function init() {
-    inquirer.prompt(questions).then(function(answers){
-        console.log(answers);
-        api.getUser(answers.username);
+    inquirer.prompt(questions).then(async function(answers){
+        try{
+            // console.log(answers);
+            const userData = await api.getUser(answers.username);
+            // console.log(userData.data.data.user);
+            const data = Object.assign({}, answers, userData.data.data.user);
+            // console.log(data);
+            const markStr = markdown.generateMarkdown(data);
+            // console.log(markStr);
+            writeToFile("README.md", markStr);
+        } catch(err){
+            console.log(err);
+        }
+        
     });
 }
 
