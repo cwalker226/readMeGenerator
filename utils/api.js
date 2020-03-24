@@ -20,5 +20,3 @@ const api = {
 };
 
 module.exports = api;
-
-// 9c8e9cd396a272c970768b6ecfe542667d27f624
